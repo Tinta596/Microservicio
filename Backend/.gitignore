@@ -1,0 +1,22 @@
+# Dependencias de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+
+# Dependencias de .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno
+.env
+*.env.local
