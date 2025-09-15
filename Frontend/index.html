@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Microservicios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .python { background: linear-gradient(45deg, #306998, #ffd43b); }
+        .csharp { background: linear-gradient(45deg, #239120, #68217a); }
+        .php { background: linear-gradient(45deg, #4f5b93, #8892be); }
+
+        .service-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .service-tech {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .service-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .data-container {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .item h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .item p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .last-updated {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .service-card {
+                padding: 20px;
+            }
+
+            .controls {
+                flex-wrap: wrap;
+            }
+
+            .stats-bar {
+                flex-direction: column;
+            }
+
+            .stat-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Dashboard Microservicios</h1>
+            <p class="subtitle">Gestión integral de Productos, Usuarios y Pedidos</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value" id="total-productos">0</div>
+                <div class="stat-label">Productos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-usuarios">0</div>
+                <div class="stat-label">Usuarios</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-pedidos">0</div>
+                <div class="stat-label">Pedidos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="servicios-activos">0/3</div>
+                <div class="stat-label">Servicios Activos</div>
+            </div>
+        </div>
+
+        <div class="services-grid">
+            <!-- Microservicio Python FastAPI -->
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon python">🐍</div>
+                    <div>
+                        <h3 class="service-title">Productos API</h3>
+                        <p class="service-tech">Python + FastAPI</p>
+                        <span class="status-indicator status-offline" id="python-status">🔴 Desconectado</span>
+                    </div>
+                </div>
+
+                <div class="service-info">
+                    <div class="info-item">
+                        <span class="info-value" id="python-count">0</span>
+                        <span class="info-label">Productos</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value" id="python-uptime">-</span>
+                        <span class="info-label">Disponibilidad</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value" id="python-response">-</span>
+                        <span class="info-label">ms</span>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="loadProductos()">📥 Cargar</button>
+                    <button class="btn btn-success" onclick="openModal('producto-modal')">➕ Crear</button>
+                    <button class="btn btn-info" onclick="checkHealth('python')">💓 Health</button>
+                    <button class="btn btn-warning" onclick="clearData('python')">🗑️ Limpiar</button>
+                </div>
+
+                <div class="data-container" id="productos-container">
+                    <div class="loading">Haz clic en "Cargar" para obtener productos</div>
+                </div>
+                <div class="last-updated" id="python-updated">Última actualización: -</div>
+            </div>
+
+            <!-- Microservicio C# ASP.NET -->
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon csharp">#</div>
+                    <div>
+                        <h3 class="service-title">Usuarios API</h3>
+                        <p class="service-tech">C# + ASP.NET Core</p>
+                        <span class="status-indicator status-offline" id="csharp-status">🔴 Desconectado</span>
+                    </div>
+                </div>
+
+                <div class="service-info">
+                    <div class="info-item">
+                        <span class="info-value" id="csharp-count">0</span>
+                        <span class="info-label">Usuarios</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value" id="csharp-uptime">-</span>
+                        <span class="info-label">Disponibilidad</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value" id="csharp-response">-</span>
+                        <span class="info-label">ms</span>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="loadUsuarios()">📥 Cargar</button>
+                    <button class="btn btn-success" onclick="openModal('usuario-modal')">➕ Crear</button>
+                    <button class="btn btn-info" onclick="checkHealth('csharp')">💓 Health</button>
+                    <button class="btn btn-warning" onclick="clearData('csharp')">🗑️ Limpiar</button>
+                </div>
+
+                <div class="data-container" id="usuarios-container">
+                    <div class="loading">Haz clic en "Cargar" para obtener usuarios</div>
+                </div>
+                <div class="last-updated" id="csharp-updated">Última actualización: -</div>
+            </div>
+
+            <!-- Microservicio PHP -->
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon php">🐘</div>
+                    <div>
+                        <h3 class="service-title">Pedidos API</h3>
+                        <p class="service-tech">PHP Puro</p>
+                        <span class="status-indicator status-offline" id="php-status">🔴 Desconectado</span>
+                    </div>
+                </div>
+
+                <div class="service-info">
+                    <div class="info-item">
+                        <span class="info-value" id="php-count">0</span>
+                        <span class="info-label">Pedidos</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value" id="php-uptime">-</span>
+                        <span class="info-label">Disponibilidad</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value" id="php-response">-</span>
+                        <span class="info-label">ms</span>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="loadPedidos()">📥 Cargar</button>
+                    <button class="btn btn-success" onclick="openModal('pedido-modal')">➕ Crear</button>
+                    <button class="btn btn-info" onclick="checkHealth('php')">💓 Health</button>
+                    <button class="btn btn-warning" onclick="clearData('php')">🗑️ Limpiar</button>
+                </div>
+
+                <div class="data-container" id="pedidos-container">
+                    <div class="loading">Haz clic en "Cargar" para obtener pedidos</div>
+                </div>
+                <div class="last-updated" id="php-updated">Última actualización: -</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para crear producto -->
+    <div class="modal" id="producto-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear Nuevo Producto</h3>
+                <span class="close" onclick="closeModal('producto-modal')">&times;</span>
+            </div>
+            <form id="producto-form">
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="producto-nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción:</label>
+                    <textarea id="producto-descripcion" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Precio:</label>
+                    <input type="number" step="0.01" id="producto-precio" required>
+                </div>
+                <div class="form-group">
+                    <label>Categoría:</label>
+                    <input type="text" id="producto-categoria" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock:</label>
+                    <input type="number" id="producto-stock" required>
+                </div>
+                <button type="submit" class="btn btn-success">Crear Producto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para crear usuario -->
+    <div class="modal" id="usuario-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear Nuevo Usuario</h3>
+                <span class="close" onclick="closeModal('usuario-modal')">&times;</span>
+            </div>
+            <form id="usuario-form">
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="usuario-nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="usuario-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono:</label>
+                    <input type="text" id="usuario-telefono">
+                </div>
+                <div class="form-group">
+                    <label>Rol:</label>
+                    <select id="usuario-rol" required>
+                        <option value="">Seleccionar rol</option>
+                        <option value="admin">Administrador</option>
+                        <option value="usuario">Usuario</option>
+                        <option value="moderador">Moderador</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Crear Usuario</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para crear pedido -->
+    <div class="modal" id="pedido-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear Nuevo Pedido</h3>
+                <span class="close" onclick="closeModal('pedido-modal')">&times;</span>
+            </div>
+            <form id="pedido-form">
+                <div class="form-group">
+                    <label>Cliente ID:</label>
+                    <input type="number" id="pedido-cliente" required>
+                </div>
+                <div class="form-group">
+                    <label>Producto ID:</label>
+                    <input type="number" id="pedido-producto-id" required>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad:</label>
+                    <input type="number" id="pedido-cantidad" required>
+                </div>
+                <div class="form-group">
+                    <label>Precio Unitario:</label>
+                    <input type="number" step="0.01" id="pedido-precio" required>
+                </div>
+                <div class="form-group">
+                    <label>Dirección de Entrega:</label>
+                    <textarea id="pedido-direccion" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Crear Pedido</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de URLs de los microservicios
+        const API_URLS = {
+            python: 'http://localhost:8000',
+            csharp: 'http://localhost:5059/api',
+            php: 'http://localhost:8003/api/pedidos'
+        };
+
+        // Almacenamiento de datos y estado
+        const appState = {
+            productos: [],
+            usuarios: [],
+            pedidos: [],
+            servicios: {
+                python: { online: false, responseTime: 0, lastCheck: null },
+                csharp: { online: false, responseTime: 0, lastCheck: null },
+                php: { online: false, responseTime: 0, lastCheck: null }
+            }
+        };
+
+        // Funciones de utilidad
+        function showMessage(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'loading';
+            container.innerHTML = `<div class="${className}">${message}</div>`;
+        }
+
+        function updateServiceStatus(service, isOnline, responseTime = 0) {
+            const statusElement = document.getElementById(`${service}-status`);
+            const responseElement = document.getElementById(`${service}-response`);
+            const uptimeElement = document.getElementById(`${service}-uptime`);
+            
+            appState.servicios[service].online = isOnline;
+            appState.servicios[service].responseTime = responseTime;
+            appState.servicios[service].lastCheck = new Date();
+            
+            if (isOnline) {
+                statusElement.className = 'status-indicator status-online';
+                statusElement.textContent = '🟢 Conectado';
+                responseElement.textContent = responseTime > 0 ? Math.round(responseTime) : '-';
+                uptimeElement.textContent = '100%';
+            } else {
+                statusElement.className = 'status-indicator status-offline';
+                statusElement.textContent = '🔴 Desconectado';
+                responseElement.textContent = '-';
+                uptimeElement.textContent = '0%';
+            }
+            
+            updateGlobalStats();
+        }
+
+        function updateLastUpdated(service) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById(`${service}-updated`).textContent = `Última actualización: ${timeString}`;
+        }
+
+        function updateGlobalStats() {
+            // Actualizar contadores globales
+            document.getElementById('total-productos').textContent = appState.productos.length;
+            document.getElementById('total-usuarios').textContent = appState.usuarios.length;
+            document.getElementById('total-pedidos').textContent = appState.pedidos.length;
+            
+            // Actualizar contadores individuales
+            document.getElementById('python-count').textContent = appState.productos.length;
+            document.getElementById('csharp-count').textContent = appState.usuarios.length;
+            document.getElementById('php-count').textContent = appState.pedidos.length;
+            
+            // Calcular servicios activos
+            const activeServices = Object.values(appState.servicios).filter(s => s.online).length;
+            document.getElementById('servicios-activos').textContent = `${activeServices}/3`;
+        }
+
+        // Funciones para modales
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Limpiar datos de un servicio
+        function clearData(service) {
+            if (!confirm(`¿Estás seguro de que quieres limpiar los datos de ${service}?`)) return;
+            
+            const containers = {
+                python: 'productos-container',
+                csharp: 'usuarios-container',
+                php: 'pedidos-container'
+            };
+            
+            showMessage(containers[service], 'Datos limpiados. Haz clic en "Cargar" para obtener nuevos datos.', 'info');
+            
+            if (service === 'python') appState.productos = [];
+            if (service === 'csharp') appState.usuarios = [];
+            if (service === 'php') appState.pedidos = [];
+            
+            updateGlobalStats();
+        }
+
+        // Health checks
+        async function checkHealth(service) {
+            const urls = {
+                python: `${API_URLS.python}/health`,
+                csharp: `${API_URLS.csharp}/usuarios/health`,
+                php: `${API_URLS.php}/health`
+            };
+
+            const startTime = performance.now();
+            
+            try {
+                const response = await fetch(urls[service]);
+                const data = await response.json();
+                const responseTime = performance.now() - startTime;
+                
+                updateServiceStatus(service, true, responseTime);
+                alert(`✅ ${service.toUpperCase()}: ${data.status || 'healthy'} (${Math.round(responseTime)}ms)`);
+            } catch (error) {
+                updateServiceStatus(service, false);
+                alert(`❌ ${service.toUpperCase()}: No disponible - ${error.message}`);
+            }
+        }
+
+        // Funciones para Productos (Python FastAPI)
+        async function loadProductos() {
+            showMessage('productos-container', 'Cargando productos...', 'info');
+            
+            try {
+                const response = await fetch(`${API_URLS.python}/productos`);
+                if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+                
+                const productos = await response.json();
+                appState.productos = productos;
+                updateServiceStatus('python', true);
+                updateLastUpdated('python');
+                
+                if (productos.length === 0) {
+                    showMessage('productos-container', 'No hay productos disponibles', 'info');
+                    return;
+                }
+
+                let html = '';
+                productos.forEach(producto => {
+                    html += `
+                        <div class="item">
+                            <h4>${producto.nombre}</h4>
+                            <p><strong>ID:</strong> ${producto.id}</p>
+                            <p><strong>Precio:</strong> $${producto.precio.toFixed(2)}</p>
+                            <p><strong>Categoría:</strong> ${producto.categoria}</p>
+                            <p><strong>Stock:</strong> ${producto.stock} unidades</p>
+                            <p><strong>Descripción:</strong> ${producto.descripcion.substring(0, 60)}...</p>
+                            <div class="item-actions">
+                                <button class="btn btn-warning btn-small" onclick="deleteProducto(${producto.id})">🗑️ Eliminar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('productos-container').innerHTML = html;
+                updateGlobalStats();
+            } catch (error) {
+                updateServiceStatus('python', false);
+                showMessage('productos-container', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function createProducto(event) {
+            event.preventDefault();
+            
+            const producto = {
+                nombre: document.getElementById('producto-nombre').value,
+                descripcion: document.getElementById('producto-descripcion').value,
+                precio: parseFloat(document.getElementById('producto-precio').value),
+                categoria: document.getElementById('producto-categoria').value,
+                stock: parseInt(document.getElementById('producto-stock').value)
+            };
+
+            try {
+                const response = await fetch(`${API_URLS.python}/productos`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(producto)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || `Error ${response.status}: ${response.statusText}`);
+                }
+                
+                closeModal('producto-modal');
+                document.getElementById('producto-form').reset();
+                alert('✅ Producto creado exitosamente');
+                loadProductos();
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        async function deleteProducto(id) {
+            if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+
+            try {
+                const response = await fetch(`${API_URLS.python}/productos/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Error al eliminar producto');
+                
+                alert('✅ Producto eliminado exitosamente');
+                loadProductos();
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        // Funciones para Usuarios (C# ASP.NET)
+        async function loadUsuarios() {
+            showMessage('usuarios-container', 'Cargando usuarios...', 'info');
+            
+            try {
+                const response = await fetch(`${API_URLS.csharp}/usuarios`);
+                if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+                
+                const usuarios = await response.json();
+                appState.usuarios = usuarios;
+                updateServiceStatus('csharp', true);
+                updateLastUpdated('csharp');
+                
+                if (usuarios.length === 0) {
+                    showMessage('usuarios-container', 'No hay usuarios disponibles', 'info');
+                    return;
+                }
+
+                let html = '';
+                usuarios.forEach(usuario => {
+                    html += `
+                        <div class="item">
+                            <h4>${usuario.nombre}</h4>
+                            <p><strong>ID:</strong> ${usuario.id}</p>
+                            <p><strong>Email:</strong> ${usuario.email}</p>
+                            <p><strong>Teléfono:</strong> ${usuario.telefono || 'No especificado'}</p>
+                            <p><strong>Rol:</strong> ${usuario.rol}</p>
+                            <p><strong>Estado:</strong> ${usuario.activo ? 'Activo' : 'Inactivo'}</p>
+                            <div class="item-actions">
+                                <button class="btn btn-warning btn-small" onclick="deleteUsuario(${usuario.id})">🗑️ Eliminar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('usuarios-container').innerHTML = html;
+                updateGlobalStats();
+            } catch (error) {
+                updateServiceStatus('csharp', false);
+                showMessage('usuarios-container', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function createUsuario(event) {
+            event.preventDefault();
+            
+            const usuario = {
+                nombre: document.getElementById('usuario-nombre').value,
+                email: document.getElementById('usuario-email').value,
+                telefono: document.getElementById('usuario-telefono').value,
+                rol: document.getElementById('usuario-rol').value
+            };
+
+            try {
+                const response = await fetch(`${API_URLS.csharp}/usuarios`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(usuario)
+                });
+
+                if (!response.ok) throw new Error('Error al crear usuario');
+                
+                closeModal('usuario-modal');
+                document.getElementById('usuario-form').reset();
+                alert('✅ Usuario creado exitosamente');
+                loadUsuarios();
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        async function deleteUsuario(id) {
+            if (!confirm('¿Estás seguro de eliminar este usuario?')) return;
+
+            try {
+                const response = await fetch(`${API_URLS.csharp}/usuarios/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Error al eliminar usuario');
+                
+                alert('✅ Usuario eliminado exitosamente');
+                loadUsuarios();
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        // Funciones para Pedidos (PHP)
+        async function loadPedidos() {
+            showMessage('pedidos-container', 'Cargando pedidos...', 'info');
+            
+            try {
+                const response = await fetch(`${API_URLS.php}`);
+                if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+                
+                const pedidos = await response.json();
+                appState.pedidos = pedidos;
+                updateServiceStatus('php', true);
+                updateLastUpdated('php');
+                
+                if (pedidos.length === 0) {
+                    showMessage('pedidos-container', 'No hay pedidos disponibles', 'info');
+                    return;
+                }
+
+                let html = '';
+                pedidos.forEach(pedido => {
+                    html += `
+                        <div class="item">
+                            <h4>Pedido #${pedido.id}</h4>
+                            <p><strong>Cliente ID:</strong> ${pedido.cliente_id}</p>
+                            <p><strong>Total:</strong> $${pedido.total.toFixed(2)}</p>
+                            <p><strong>Estado:</strong> ${pedido.estado}</p>
+                            <p><strong>Fecha:</strong> ${new Date(pedido.fecha_pedido).toLocaleString()}</p>
+                            <p><strong>Productos:</strong> ${pedido.productos.length} items</p>
+                            <p><strong>Dirección:</strong> ${pedido.direccion_entrega.substring(0, 40)}...</p>
+                            <div class="item-actions">
+                                <button class="btn btn-warning btn-small" onclick="deletePedido(${pedido.id})">🗑️ Eliminar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('pedidos-container').innerHTML = html;
+                updateGlobalStats();
+            } catch (error) {
+                updateServiceStatus('php', false);
+                showMessage('pedidos-container', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function createPedido(event) {
+            event.preventDefault();
+            
+            const pedido = {
+                cliente_id: parseInt(document.getElementById('pedido-cliente').value),
+                productos: [{
+                    producto_id: parseInt(document.getElementById('pedido-producto-id').value),
+                    cantidad: parseInt(document.getElementById('pedido-cantidad').value),
+                    precio_unitario: parseFloat(document.getElementById('pedido-precio').value)
+                }],
+                direccion_entrega: document.getElementById('pedido-direccion').value
+            };
+
+            try {
+                const response = await fetch(`${API_URLS.php}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pedido)
+                });
+
+                if (!response.ok) throw new Error('Error al crear pedido');
+                
+                closeModal('pedido-modal');
+                document.getElementById('pedido-form').reset();
+                alert('✅ Pedido creado exitosamente');
+                loadPedidos();
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        async function deletePedido(id) {
+            if (!confirm('¿Estás seguro de eliminar este pedido?')) return;
+
+            try {
+                const response = await fetch(`${API_URLS.php}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Error al eliminar pedido');
+                
+                alert('✅ Pedido eliminado exitosamente');
+                loadPedidos();
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        // Event listeners para formularios
+        document.getElementById('producto-form').addEventListener('submit', createProducto);
+        document.getElementById('usuario-form').addEventListener('submit', createUsuario);
+        document.getElementById('pedido-form').addEventListener('submit', createPedido);
+
+        // Inicialización: verificar estado de servicios al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            checkHealth('python');
+            checkHealth('csharp');
+            checkHealth('php');
+            
+            // Cargar datos automáticamente después de un breve retraso
+            setTimeout(() => {
+                if (appState.servicios.python.online) loadProductos();
+                if (appState.servicios.csharp.online) loadUsuarios();
+                if (appState.servicios.php.online) loadPedidos();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
